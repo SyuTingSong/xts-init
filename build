@@ -1,0 +1,40 @@
+#! /usr/bin/env bash
+if [ -z $VERSION ]; then
+	VERSION=`date +%Y%m%d%H%M%S`
+fi
+if [ -z $PROJECT ]; then
+	CURDIR=`pwd`
+	PROJECT=`basename $CURDIR`
+fi
+if [ -z $STATIC_DOMAIN ]; then
+	STATIC_DOMAIN="static.oupeng.com"
+fi
+
+echo "Turning off debug mode..."
+patch -p1 < build.tools/turn-off-debug.patch
+echo "Replacing static resource ref"
+files=`grep -lR 'static/' protected/view`
+for f in $files
+do
+	echo -n "Processing $f..."
+	sed "s/\"\/static\/\([^\"]*\)/\"\/\/$STATIC_DOMAIN\/$PROJECT\/static\/$VERSION\/\\1/g" < $f > $f.static && mv $f.static $f
+	sed "s/\"static\/\([^\"]*\)/\"\/\/$STATIC_DOMAIN\/$PROJECT\/static\/$VERSION\/\\1/g" < $f > $f.static && mv $f.static $f
+	echo "done"
+done
+
+echo "Minifying js/css file..."
+
+find static -name *.css -print -exec java -jar build.tools/yuicompressor-2.4.8.jar {} -o {} \;
+find static -name *.js  -print -exec java -jar build.tools/yuicompressor-2.4.8.jar {} -o {} \;
+
+echo -n "Moving static resources into static/$VERSION..."
+mkdir $VERSION && mv static/* $VERSION/ && mv $VERSION static/
+echo "done"
+
+echo -n "Cleaning..."
+rm -rf build.tools/ README.md
+echo "done"
+
+echo "Seems everything goes well. I'm going away..."
+rm -f build
+

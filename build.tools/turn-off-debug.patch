@@ -1,0 +1,13 @@
+diff --git a/webroot/xts.php b/webroot/xts.php
+index f304977..54633ed 100644
+--- a/webroot/xts.php
++++ b/webroot/xts.php
+@@ -5,7 +5,7 @@
+  * Date: 6/23/14
+  * Time: 12:35 PM
+  */
+-defined('X_DEBUG') or define('X_DEBUG', true);
++defined('X_DEBUG') or define('X_DEBUG', false);
+ define('X_PROJECT_ROOT', dirname(__DIR__));
+ require_once(X_PROJECT_ROOT.'/framework/x.php');
+ require_once(X_PROJECT_ROOT.'/protected/common.php');
