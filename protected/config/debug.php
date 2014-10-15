@@ -6,7 +6,10 @@ return array(
             'singleton' => true,
             'conf' => array(
                 'actionDir' => X_PROJECT_ROOT.'/protected/action',
-                'defaultAction' => '/index'
+                'defaultAction' => '/index',
+                'actionPrefix' => 'action_',
+                'preAction' => '',
+                'preActionFile' => '',
             ),
         ),
         'orange' => array(
